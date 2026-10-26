@@ -1143,6 +1143,7 @@
                     <div class="cert-grid-item">測驗單元：<strong>神經系統與反應時間</strong></div>
                     <div class="cert-grid-item">最佳反應：<strong id="cert-best-ms">0 ms</strong></div>
                     <div class="cert-grid-item">平均反應：<strong id="cert-avg-ms">0 ms</strong></div>
+                    <div class="cert-grid-item" style="grid-column: span 2;">獲得特調：<strong id="cert-drink" style="color:var(--boba-caramel);">👑 究極黑糖「波霸爆量」黃金厚奶茶</strong></div>
                 </div>
                 <div class="cert-code-box" id="cert-code">NEURO-000000</div>
                 <div class="cert-hint">
@@ -1430,6 +1431,7 @@
         let popTimeP1 = 0, popTimeP2 = 0;
         let reactionTimesP1 = [], reactionTimesP2 = [];
         let trapAvoidsP1 = 0, trapHitsP1 = 0;
+        let trapAvoidsP2 = 0, trapHitsP2 = 0;
         let lastTouchTs = 0; // 防止手勢雙觸發
 
         // 學生資訊 (遵循平台 701~710 與 1~35 規範，去除「班」及「號」)
@@ -1799,6 +1801,7 @@
             scoreP1 = 0; scoreP2 = 0;
             reactionTimesP1 = []; reactionTimesP2 = [];
             trapAvoidsP1 = 0; trapHitsP1 = 0;
+            trapAvoidsP2 = 0; trapHitsP2 = 0;
             scoreP1Display.textContent = '0';
             scoreP2Display.textContent = '0';
             updateCupLevels();
@@ -1865,10 +1868,90 @@
             return "NEURO-" + Math.abs(hash).toString(16).toUpperCase().padStart(6, '0');
         }
 
+        // 🧋 趣味手搖特調評定系統 (劃分多珍珠、少珍珠、純奶茶、芹菜珍珠、芹菜奶茶等趣味等級)
+        function evaluateDrinkReward(score, trapHits) {
+            if (trapHits >= 2) {
+                return {
+                    name: "暗黑「芹」天霹靂純芹菜奶茶 🥬",
+                    badge: "🥬 芹菜暗黑特調",
+                    emoji: "🥬🥛🤢",
+                    title: "衝動抑制特訓生",
+                    desc: "大腦前額葉衝動抑制頻頻失守！整杯漂浮著現摘生芹菜，每一口都在挑戰神經突觸的耐受極限！",
+                    theme: "trap-heavy",
+                    bg: "#ecfdf5",
+                    border: "#10b981",
+                    color: "#047857"
+                };
+            } else if (trapHits === 1) {
+                return {
+                    name: "驚奇冒險「芹」意綿綿波霸奶茶 🌿🧋",
+                    badge: "🌿 芹菜珍珠特調",
+                    emoji: "🌿🧋😅",
+                    title: "奇葩特調勇者",
+                    desc: "Q彈黑糖波霸冷不防被脆爽芹菜突襲！前額葉恍神的代價，就是成功解鎖這杯奇特手搖！",
+                    theme: "trap-light",
+                    bg: "#fefce8",
+                    border: "#eab308",
+                    color: "#a16207"
+                };
+            } else if (score >= 16) {
+                return {
+                    name: "究極黑糖「波霸爆量」黃金厚奶茶 👑🧋",
+                    badge: "👑 多珍珠（波霸爆量）",
+                    emoji: "👑🧋✨",
+                    title: "神經光速吸珠王",
+                    desc: "太神啦！整整半杯以上都是滿滿的Q彈黑糖波霸！視神經與大腦傳導達國手級光速反應，每一口都吸到飽！",
+                    theme: "gold",
+                    bg: "#fffbeb",
+                    border: "#f59e0b",
+                    color: "#b45309"
+                };
+            } else if (score >= 8) {
+                return {
+                    name: "黃金比例「少珍珠」微甜經典奶茶 🧋",
+                    badge: "🧋 少珍珠（經典比例）",
+                    emoji: "🧋😋👌",
+                    title: "神經協調大師",
+                    desc: "恰到好處的波霸與滑順奶茶完美融合！大腦反應節奏穩健、精準閃避芹菜，是手搖店回購率第一名的明星特調！",
+                    theme: "silver",
+                    bg: "#fdf8f4",
+                    border: "#d97706",
+                    color: "#92400e"
+                };
+            } else if (score >= 1) {
+                return {
+                    name: "溫潤香濃「純奶茶」（微量珍珠） 🥛",
+                    badge: "🥛 純奶茶（微量珍珠）",
+                    emoji: "🥛☕😌",
+                    title: "優雅品茶家",
+                    desc: "手速悠閒平穩，雖然只吸到微量珍珠，但茶香濃郁順喉！神經突觸正在熱身，下一局手速必能大幅爆發！",
+                    theme: "bronze",
+                    bg: "#f8fafc",
+                    border: "#94a3b8",
+                    color: "#475569"
+                };
+            } else {
+                return {
+                    name: "原汁原味「零珍珠」無糖純紅茶 🍵",
+                    badge: "🍵 零珍珠純茶",
+                    emoji: "🍵🍃🧘",
+                    title: "佛系冥想大師",
+                    desc: "受器與動器尚未連線！杯子裡只有甘醇清茶，連一顆珍珠的影子都沒有！快再戰一局喚醒神經反射！",
+                    theme: "tea",
+                    bg: "#f1f5f9",
+                    border: "#cbd5e1",
+                    color: "#64748b"
+                };
+            }
+        }
+
         // 顯示結算彈窗
         function showResultModal(avg1, best1, avg2, best2) {
             const dynamicBody = document.getElementById('result-dynamic-body');
             const verifyCode = generateVerifyCode(scoreP1, avg1, currentStudent.class, currentStudent.seat);
+
+            const drinkP1 = evaluateDrinkReward(scoreP1, trapHitsP1);
+            const drinkP2 = evaluateDrinkReward(scoreP2, trapHitsP2);
 
             // 更新證書卡
             document.getElementById('cert-class').textContent = `${currentStudent.class}`;
@@ -1876,6 +1959,7 @@
             document.getElementById('cert-name').textContent = currentStudent.name;
             document.getElementById('cert-best-ms').textContent = `${best1} ms`;
             document.getElementById('cert-avg-ms').textContent = `${avg1} ms`;
+            document.getElementById('cert-drink').textContent = drinkP1.name;
             document.getElementById('cert-code').textContent = verifyCode;
 
             if (is2PMode) {
@@ -1889,33 +1973,53 @@
                 }
 
                 dynamicBody.innerHTML = `
-                    <div style="background:#fef3c7; border:1px solid #fde68a; border-radius:14px; padding:12px; text-align:center; margin-bottom:16px;">
+                    <div style="background:#fef3c7; border:1px solid #fde68a; border-radius:14px; padding:12px; text-align:center; margin-bottom:14px;">
                         <h3 style="color:#b45309; font-size:1.15rem; margin-bottom:4px;">${winnerText}</h3>
-                        <p style="font-size:0.85rem; color:#92400e;">雙方大腦前額葉衝動控制與視神經反應精彩絕倫</p>
+                        <p style="font-size:0.85rem; color:#92400e;">雙方手搖特調出爐！來看看誰的奶茶料最豐富！</p>
                     </div>
                     <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;">
-                        <div style="background:#fee2e2; border-radius:12px; padding:12px; text-align:center;">
-                            <div style="color:#dc2626; font-size:0.8rem; font-weight:800;">🔴 1P 選手</div>
-                            <div style="font-size:1.8rem; font-weight:900; color:#dc2626;">${scoreP1} 分</div>
-                            <div style="font-size:0.75rem; color:#7f1d1d;">平均反應：${avg1} ms</div>
+                        <!-- 1P 特調卡片 -->
+                        <div style="background:${drinkP1.bg}; border:2px solid ${drinkP1.border}; border-radius:14px; padding:12px; text-align:center;">
+                            <div style="font-size:2.2rem; line-height:1; margin-bottom:4px;">${drinkP1.emoji}</div>
+                            <div style="color:${drinkP1.color}; font-size:0.75rem; font-weight:800;">🔴 1P 特調</div>
+                            <h4 style="color:${drinkP1.color}; font-size:0.95rem; font-weight:900; margin:4px 0;">${drinkP1.name}</h4>
+                            <div style="font-size:1.5rem; font-weight:900; color:${drinkP1.color}; margin:4px 0;">${scoreP1} <span style="font-size:0.8rem;">分</span></div>
+                            <div style="font-size:0.75rem; color:#6b7280;">反應：${avg1} ms</div>
+                            <div style="font-size:0.72rem; color:${drinkP1.color}; margin-top:6px; line-height:1.4;">${drinkP1.desc}</div>
                         </div>
-                        <div style="background:#dbeafe; border-radius:12px; padding:12px; text-align:center;">
-                            <div style="color:#2563eb; font-size:0.8rem; font-weight:800;">🔵 2P 挑戰者</div>
-                            <div style="font-size:1.8rem; font-weight:900; color:#2563eb;">${scoreP2} 分</div>
-                            <div style="font-size:0.75rem; color:#1e3a8a;">平均反應：${avg2} ms</div>
+                        <!-- 2P 特調卡片 -->
+                        <div style="background:${drinkP2.bg}; border:2px solid ${drinkP2.border}; border-radius:14px; padding:12px; text-align:center;">
+                            <div style="font-size:2.2rem; line-height:1; margin-bottom:4px;">${drinkP2.emoji}</div>
+                            <div style="color:${drinkP2.color}; font-size:0.75rem; font-weight:800;">🔵 2P 特調</div>
+                            <h4 style="color:${drinkP2.color}; font-size:0.95rem; font-weight:900; margin:4px 0;">${drinkP2.name}</h4>
+                            <div style="font-size:1.5rem; font-weight:900; color:${drinkP2.color}; margin:4px 0;">${scoreP2} <span style="font-size:0.8rem;">分</span></div>
+                            <div style="font-size:0.75rem; color:#6b7280;">反應：${avg2} ms</div>
+                            <div style="font-size:0.72rem; color:${drinkP2.color}; margin-top:6px; line-height:1.4;">${drinkP2.desc}</div>
                         </div>
                     </div>
                 `;
             } else {
                 dynamicBody.innerHTML = `
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;">
-                        <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:14px; text-align:center;">
-                            <div style="color:#166534; font-size:0.82rem; font-weight:800;">最終吸入珍珠</div>
-                            <div style="font-size:2rem; font-weight:900; color:#15803d;">${scoreP1} <span style="font-size:1rem;">顆</span></div>
+                    <div style="background:${drinkP1.bg}; border:2px solid ${drinkP1.border}; border-radius:18px; padding:18px; text-align:center; margin-bottom:14px; box-shadow:0 4px 12px rgba(0,0,0,0.03);">
+                        <div style="font-size:3.2rem; line-height:1; margin-bottom:8px;">${drinkP1.emoji}</div>
+                        <div style="display:inline-block; background:${drinkP1.border}; color:#ffffff; font-size:0.75rem; font-weight:800; padding:3px 12px; border-radius:9999px; margin-bottom:6px;">
+                            ${drinkP1.badge} · ${drinkP1.title}
                         </div>
-                        <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:12px; padding:14px; text-align:center;">
-                            <div style="color:#1e40af; font-size:0.82rem; font-weight:800;">平均神經反應時間</div>
-                            <div style="font-size:2rem; font-weight:900; color:#2563eb;">${avg1} <span style="font-size:1rem;">ms</span></div>
+                        <h3 style="color:${drinkP1.color}; font-size:1.35rem; font-weight:900; margin-bottom:6px;">
+                            ${drinkP1.name}
+                        </h3>
+                        <p style="font-size:0.88rem; color:${drinkP1.color}; line-height:1.5; margin-bottom:14px;">
+                            ${drinkP1.desc}
+                        </p>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; background:rgba(255,255,255,0.7); padding:10px; border-radius:12px;">
+                            <div>
+                                <div style="font-size:0.75rem; color:#6b7280; font-weight:700;">吸入黑糖珍珠</div>
+                                <div style="font-size:1.5rem; font-weight:900; color:#15803d;">${scoreP1} <span style="font-size:0.85rem;">顆</span></div>
+                            </div>
+                            <div>
+                                <div style="font-size:0.75rem; color:#6b7280; font-weight:700;">平均神經反應</div>
+                                <div style="font-size:1.5rem; font-weight:900; color:#2563eb;">${avg1} <span style="font-size:0.85rem;">ms</span></div>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -1932,9 +2036,11 @@
         function copyCertText() {
             const avg1 = reactionTimesP1.length ? Math.round(reactionTimesP1.reduce((a, b) => a + b, 0) / reactionTimesP1.length) : 0;
             const code = document.getElementById('cert-code').textContent;
+            const drink1 = evaluateDrinkReward(scoreP1, trapHitsP1);
             const text = `【國中生物七上神經系統課堂成果】
 選手：${currentStudent.class} - ${currentStudent.seat} ${currentStudent.name}
 遊戲：珍珠奶茶大對決 (神經傳導與反應時間)
+獲得特調：${drink1.name}
 成績：${scoreP1} 分
 平均反應速率：${avg1} ms
 Classroom 防偽代碼：${code}`;
