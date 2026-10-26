@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
+  <script>window.__DISABLE_BGS_AUTO_LOGIN__ = true;</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -1247,15 +1248,21 @@
                 <p style="margin-top:6px;"><strong>3. 練習效應（突觸可塑性）：</strong>經過多次反應力對決，神經突觸傳導效率提升，反應毫秒數顯著縮短，是神經系統適應學習的最佳例證！</p>
             </div>
 
-            <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button class="btn-action btn-secondary" style="flex:1;" onclick="copyCertText()">
-                    <span>📋</span>
-                    <span>複製成績文本</span>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 20px;">
+                <button class="btn-action" style="background:linear-gradient(135deg, #16a34a, #15803d); color:white; font-size:1.05rem; padding:12px; font-weight:800;" onclick="openGasSubmitModal()">
+                    <span>🚀</span>
+                    <span>送出成績至試算表 (優先推薦)</span>
                 </button>
-                <button class="btn-action btn-primary" style="flex:1;" onclick="closeResultModal()">
-                    <span>🔄</span>
-                    <span>再戰一局！</span>
-                </button>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-action btn-secondary" style="flex:1;" onclick="copyCertText()">
+                        <span>📋</span>
+                        <span>複製成績文本 (斷網備用)</span>
+                    </button>
+                    <button class="btn-action btn-primary" style="flex:1;" onclick="closeResultModal()">
+                        <span>🔄</span>
+                        <span>再戰一局！</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -1327,6 +1334,7 @@
         </div>
     </div>
 
+    <script src="score-submit-modal.js?v=3.6"></script>
     <script>
         /**
          * 🧋 珍珠奶茶大對決 (喝光奶茶擂台版)
@@ -2155,6 +2163,22 @@
 
         function closeResultModal() {
             modalResult.style.display = 'none';
+        }
+
+        // 優先：送出成績至 GAS 試算表
+        function openGasSubmitModal() {
+            if (typeof showScoreSubmitModal === 'function') {
+                const avg1 = reactionTimesP1.length ? Math.round(reactionTimesP1.reduce((a, b) => a + b, 0) / reactionTimesP1.length) : 0;
+                const drink1 = evaluateDrinkReward(scoreP1, trapHitsP1);
+                showScoreSubmitModal({
+                    gameTitle: '珍珠奶茶大對決 (神經反應力)',
+                    score: scoreP1,
+                    scoreDisplay: `${scoreP1} 顆 (${drink1.name})`,
+                    duration: `平均反應 ${avg1} ms`
+                });
+            } else {
+                alert('成績登錄模組載入中，請稍候重試或先使用「複製成績文本」！');
+            }
         }
 
         // 複製證書成績文本
