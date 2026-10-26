@@ -664,11 +664,11 @@
         /* 🧋 向量 SVG 角色彈起系統 */
         .character-sprite {
             position: absolute;
-            bottom: 0;
+            top: 50%;
             left: 50%;
-            width: 82%;
-            height: 82%;
-            transform: translate(-50%, 120%);
+            width: 76%;
+            height: 76%;
+            transform: translate(-50%, 140%);
             transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
             pointer-events: none;
             z-index: 5;
@@ -676,11 +676,11 @@
         }
 
         .hole.up-boba .boba-char {
-            transform: translate(-50%, 8%);
+            transform: translate(-50%, -50%);
         }
 
         .hole.up-coriander .coriander-char {
-            transform: translate(-50%, 8%);
+            transform: translate(-50%, -50%);
         }
 
         /* 💥 打擊飄字與毫秒浮動動態 */
@@ -969,7 +969,7 @@
             </button>
             <button class="nav-btn" id="btn-student-profile" title="設定班級座號">
                 <span>👤</span>
-                <span id="nav-student-tag">701 班 01 號</span>
+                <span id="nav-student-tag">701 - 1</span>
             </button>
         </div>
     </header>
@@ -1137,8 +1137,8 @@
                 <span class="cert-badge">Google Classroom 課堂繳交專用憑證</span>
                 <div class="cert-header" id="cert-title">國中生物科神經系統能力認證卡</div>
                 <div class="cert-grid">
-                    <div class="cert-grid-item">選手班級：<strong id="cert-class">701 班</strong></div>
-                    <div class="cert-grid-item">選手座號：<strong id="cert-seat">01 號</strong></div>
+                    <div class="cert-grid-item">選手班級：<strong id="cert-class">701</strong></div>
+                    <div class="cert-grid-item">選手座號：<strong id="cert-seat">1</strong></div>
                     <div class="cert-grid-item">選手姓名：<strong id="cert-name">生物探究家</strong></div>
                     <div class="cert-grid-item">測驗單元：<strong>神經系統與反應時間</strong></div>
                     <div class="cert-grid-item">最佳反應：<strong id="cert-best-ms">0 ms</strong></div>
@@ -1177,7 +1177,7 @@
             <div style="text-align: center; margin-bottom: 18px;">
                 <div style="font-size: 2.2rem; margin-bottom: 6px;">👤</div>
                 <h3 style="font-size: 1.35rem; color: var(--boba-dark); font-weight: 800;">設定學生身分資訊</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted);">符合全平台 701~710 班與 01~35 號標準規範</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">符合全平台 701~710 與 1~35 標準規範</p>
             </div>
 
             <div class="form-row">
@@ -1280,26 +1280,83 @@
             </svg>
         `;
 
-        // 搞怪翠綠香菜葉 SVG (考驗大腦前額葉衝動抑制)
+        // 精緻立體擬真芹菜葉 SVG (考驗大腦前額葉衝動抑制與辨識)
         const corianderSVG = `
             <svg viewBox="0 0 100 100" class="character-sprite coriander-char">
                 <defs>
-                    <linearGradient id="herbGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#34d399"/>
-                        <stop offset="100%" stop-color="#059669"/>
+                    <!-- 芹菜葉柄立體漸層 -->
+                    <linearGradient id="stalkGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#86efac"/>
+                        <stop offset="30%" stop-color="#34d399"/>
+                        <stop offset="70%" stop-color="#10b981"/>
+                        <stop offset="100%" stop-color="#047857"/>
                     </linearGradient>
+                    <!-- 葉片主層漸層 (鮮嫩受光面) -->
+                    <linearGradient id="celeryLeafLight" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#a7f3d0"/>
+                        <stop offset="25%" stop-color="#34d399"/>
+                        <stop offset="75%" stop-color="#059669"/>
+                        <stop offset="100%" stop-color="#064e3b"/>
+                    </linearGradient>
+                    <!-- 葉片底層陰影漸層 -->
+                    <linearGradient id="celeryLeafDark" x1="0%" y1="100%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#064e3b"/>
+                        <stop offset="60%" stop-color="#047857"/>
+                        <stop offset="100%" stop-color="#10b981"/>
+                    </linearGradient>
+                    <filter id="leafShadow" x="-10%" y="-10%" width="120%" height="120%">
+                        <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#064e3b" flood-opacity="0.25"/>
+                    </filter>
                 </defs>
-                <path d="M 50 92 L 50 62 Q 20 45 14 18 Q 35 22 46 42 Q 50 12 50 6 Q 54 12 58 42 Q 68 22 88 18 Q 82 45 54 62 Z" 
-                      fill="url(#herbGrad)" stroke="#047857" stroke-width="2.5" stroke-linejoin="round"/>
-                <!-- 頑皮眼睛 -->
-                <circle cx="40" cy="45" r="4" fill="#064e3b"/>
-                <circle cx="60" cy="45" r="4" fill="#064e3b"/>
-                <!-- 挑釁眉毛 -->
-                <path d="M 34 37 L 44 42" stroke="#064e3b" stroke-width="2.5" stroke-linecap="round"/>
-                <path d="M 66 37 L 56 42" stroke="#064e3b" stroke-width="2.5" stroke-linecap="round"/>
-                <!-- 吐舌搞怪嘴 -->
-                <path d="M 44 56 Q 50 50 56 56" stroke="#064e3b" stroke-width="2.5" fill="none"/>
-                <ellipse cx="50" cy="62" rx="4" ry="5" fill="#fb7185"/>
+
+                <!-- 後景層次葉片 (深色襯托) -->
+                <g filter="url(#leafShadow)">
+                    <!-- 左後裂葉 -->
+                    <path d="M 32 46 C 24 38, 14 36, 8 26 C 13 25, 17 29, 21 24 C 24 26, 23 31, 28 30 C 29 23, 35 25, 37 32 Z" 
+                          fill="url(#celeryLeafDark)" stroke="#064e3b" stroke-width="0.8"/>
+                    <!-- 右後裂葉 -->
+                    <path d="M 68 46 C 76 38, 86 36, 92 26 C 87 25, 83 29, 79 24 C 76 26, 77 31, 72 30 C 71 23, 65 25, 63 32 Z" 
+                          fill="url(#celeryLeafDark)" stroke="#064e3b" stroke-width="0.8"/>
+                </g>
+
+                <!-- 芹菜主葉柄 (具備凹凸槽線條的自然弧度) -->
+                <path d="M 47 98 C 47 80, 48 66, 50 52 C 51 40, 50 28, 50 18" 
+                      stroke="url(#stalkGrad)" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+                <!-- 芹菜莖部光澤肋線 -->
+                <path d="M 48.5 98 C 48.5 80, 49.5 66, 51 52" 
+                      stroke="#ecfdf5" stroke-width="1.2" stroke-linecap="round" fill="none" opacity="0.85"/>
+
+                <!-- 左側分枝葉柄 -->
+                <path d="M 49 62 C 43 55, 36 49, 28 44" 
+                      stroke="url(#stalkGrad)" stroke-width="3" stroke-linecap="round" fill="none"/>
+                <!-- 右側分枝葉柄 -->
+                <path d="M 50 54 C 57 48, 64 43, 72 39" 
+                      stroke="url(#stalkGrad)" stroke-width="3" stroke-linecap="round" fill="none"/>
+
+                <!-- 🌿 左側前景芹菜裂葉 (真實鋸齒羽裂) -->
+                <path d="M 28 44 C 20 38, 10 34, 6 22 C 12 21, 16 26, 20 20 C 25 21, 24 28, 30 27 C 32 18, 38 21, 41 28 C 42 36, 34 40, 28 44 Z" 
+                      fill="url(#celeryLeafLight)" stroke="#064e3b" stroke-width="1.2" stroke-linejoin="round"/>
+                <!-- 左葉脈 -->
+                <path d="M 28 44 Q 21 33 13 26 M 23 37 Q 17 28 14 23 M 25 35 Q 29 28 34 25" 
+                      stroke="#d1fae5" stroke-width="0.9" stroke-linecap="round" fill="none" opacity="0.9"/>
+
+                <!-- 🌿 右側前景芹菜裂葉 -->
+                <path d="M 72 39 C 80 33, 90 29, 94 17 C 88 16, 84 21, 80 15 C 75 16, 76 23, 70 22 C 68 13, 62 16, 59 23 C 58 31, 66 35, 72 39 Z" 
+                      fill="url(#celeryLeafLight)" stroke="#064e3b" stroke-width="1.2" stroke-linejoin="round"/>
+                <!-- 右葉脈 -->
+                <path d="M 72 39 Q 79 28 87 21 M 77 32 Q 83 23 86 18 M 75 30 Q 71 23 66 20" 
+                      stroke="#d1fae5" stroke-width="0.9" stroke-linecap="round" fill="none" opacity="0.9"/>
+
+                <!-- 🌿 頂部頂生主裂葉 (典型芹菜三出掌狀鋸齒深裂) -->
+                <path d="M 50 26 C 42 18, 30 16, 24 6 C 32 4, 36 10, 41 3 C 46 7, 45 15, 50 12 C 55 15, 54 7, 59 3 C 64 10, 68 4, 76 6 C 70 16, 58 18, 50 26 Z" 
+                      fill="url(#celeryLeafLight)" stroke="#064e3b" stroke-width="1.4" stroke-linejoin="round"/>
+                <!-- 頂生葉脈系統 -->
+                <path d="M 50 26 L 50 8 M 50 20 Q 40 14 30 9 M 50 20 Q 60 14 70 9 M 50 15 Q 43 8 38 6 M 50 15 Q 57 8 62 6" 
+                      stroke="#d1fae5" stroke-width="1.1" stroke-linecap="round" fill="none" opacity="0.9"/>
+
+                <!-- 警示紅點標記 (精緻微型提醒) -->
+                <circle cx="50" cy="52" r="3.2" fill="#ef4444"/>
+                <circle cx="50" cy="52" r="1.3" fill="#ffffff"/>
             </svg>
         `;
 
@@ -1375,37 +1432,37 @@
         let trapAvoidsP1 = 0, trapHitsP1 = 0;
         let lastTouchTs = 0; // 防止手勢雙觸發
 
-        // 學生資訊 (遵循平台 701~710 與 01~35 規範)
+        // 學生資訊 (遵循平台 701~710 與 1~35 規範，去除「班」及「號」)
         let currentStudent = {
             class: '701',
-            seat: '01',
+            seat: '1',
             name: '生物探究家'
         };
 
         function initStudentProfile() {
-            // 生成班級選單 701~710
+            // 生成班級選單 701~710 (去除「班」字)
             cfgClassSelect.innerHTML = '';
             for (let c = 701; c <= 710; c++) {
                 const opt = document.createElement('option');
                 opt.value = String(c);
-                opt.textContent = `${c} 班`;
+                opt.textContent = String(c);
                 cfgClassSelect.appendChild(opt);
             }
-            // 生成座號選單 01~35
+            // 生成座號選單 1~35 (去除「號」字)
             cfgSeatSelect.innerHTML = '';
             for (let s = 1; s <= 35; s++) {
-                const seatStr = String(s).padStart(2, '0');
+                const seatStr = String(s);
                 const opt = document.createElement('option');
                 opt.value = seatStr;
-                opt.textContent = `${seatStr} 號`;
+                opt.textContent = seatStr;
                 cfgSeatSelect.appendChild(opt);
             }
 
             // 讀取本機快取
             try {
                 const saved = JSON.parse(localStorage.getItem('boba_student_info') || '{}');
-                if (saved.class) currentStudent.class = saved.class;
-                if (saved.seat) currentStudent.seat = saved.seat;
+                if (saved.class) currentStudent.class = String(saved.class);
+                if (saved.seat) currentStudent.seat = String(parseInt(saved.seat, 10) || 1);
                 if (saved.name) currentStudent.name = saved.name;
             } catch(e) {}
 
@@ -1413,7 +1470,7 @@
         }
 
         function updateStudentUI() {
-            navStudentTag.textContent = `${currentStudent.class} 班 ${currentStudent.seat} 號`;
+            navStudentTag.textContent = `${currentStudent.class} - ${currentStudent.seat}`;
             p1NameDisplay.textContent = `${currentStudent.class}-${currentStudent.seat} ${currentStudent.name}`;
             cfgClassSelect.value = currentStudent.class;
             cfgSeatSelect.value = currentStudent.seat;
@@ -1605,7 +1662,7 @@
                 }
                 createPopIndicator(clientX, clientY, `+1 🧋`, `${reactionMs} ms`, player === 1 ? 'pop-p1' : 'pop-p2');
             } else if (isTrap) {
-                // 誤吸香菜：扣分，抑制失敗
+                // 誤吸芹菜：扣分，抑制失敗
                 playSound('trap');
                 if (player === 1) {
                     scoreP1 = Math.max(0, scoreP1 - 2);
@@ -1615,7 +1672,7 @@
                     scoreP2 = Math.max(0, scoreP2 - 2);
                     scoreP2Display.textContent = scoreP2;
                 }
-                createPopIndicator(clientX, clientY, `-2 🌿`, `衝動抑制失敗`, 'pop-trap');
+                createPopIndicator(clientX, clientY, ` -2 🌿`, `衝動抑制失敗 (誤按芹菜)`, 'pop-trap');
             }
 
             updateCupLevels();
@@ -1814,8 +1871,8 @@
             const verifyCode = generateVerifyCode(scoreP1, avg1, currentStudent.class, currentStudent.seat);
 
             // 更新證書卡
-            document.getElementById('cert-class').textContent = `${currentStudent.class} 班`;
-            document.getElementById('cert-seat').textContent = `${currentStudent.seat} 號`;
+            document.getElementById('cert-class').textContent = `${currentStudent.class}`;
+            document.getElementById('cert-seat').textContent = `${currentStudent.seat}`;
             document.getElementById('cert-name').textContent = currentStudent.name;
             document.getElementById('cert-best-ms').textContent = `${best1} ms`;
             document.getElementById('cert-avg-ms').textContent = `${avg1} ms`;
@@ -1876,7 +1933,7 @@
             const avg1 = reactionTimesP1.length ? Math.round(reactionTimesP1.reduce((a, b) => a + b, 0) / reactionTimesP1.length) : 0;
             const code = document.getElementById('cert-code').textContent;
             const text = `【國中生物七上神經系統課堂成果】
-選手：${currentStudent.class} 班 ${currentStudent.seat} 號 ${currentStudent.name}
+選手：${currentStudent.class} - ${currentStudent.seat} ${currentStudent.name}
 遊戲：珍珠奶茶大對決 (神經傳導與反應時間)
 成績：${scoreP1} 分
 平均反應速率：${avg1} ms
