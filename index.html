@@ -615,6 +615,75 @@
             font-variant-numeric: tabular-nums;
         }
 
+        /* 🧋 杯內即時配料微膠囊 (小小的字) */
+        .cup-ingredients-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            padding: 5px 12px;
+            background: rgba(243, 240, 233, 0.5);
+            border-radius: var(--radius-pill);
+            border: 1px dashed var(--border-subtle);
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .ing-label {
+            font-weight: 700;
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            white-space: nowrap;
+        }
+
+        .ing-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: var(--radius-pill);
+            font-weight: 700;
+            font-size: 0.72rem;
+            transition: transform 0.15s ease, background-color 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .chip-boba {
+            background: #fffbeb;
+            color: #b45309;
+            border: 1px solid #fde68a;
+        }
+
+        .chip-celery {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+
+        .ing-chip.bump {
+            transform: scale(1.18);
+        }
+
+        .ing-toast {
+            margin-left: auto;
+            font-size: 0.72rem;
+            font-weight: 800;
+            opacity: 0;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            transform: translateY(4px);
+            white-space: nowrap;
+        }
+
+        .ing-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast-boba { color: #d97706; }
+        .toast-celery { color: #059669; }
+
         /* 🕳️ 九宮格現代盤面 (The Boba Board) */
         .boba-grid {
             display: grid;
@@ -1090,6 +1159,14 @@
                     <span class="cup-capacity-text" id="capacity-p1">剩 100%</span>
                 </div>
 
+                <!-- 🧋 杯內即時配料微膠囊 (小小的字) -->
+                <div class="cup-ingredients-pill">
+                    <span class="ing-label">杯內配料：</span>
+                    <span class="ing-chip chip-boba" id="chip-boba-p1">🧋 珍珠 <b id="ing-boba-p1">0</b></span>
+                    <span class="ing-chip chip-celery" id="chip-celery-p1">🌿 芹菜 <b id="ing-celery-p1">0</b></span>
+                    <span class="ing-toast" id="toast-p1"></span>
+                </div>
+
                 <!-- 九宮格盤面 -->
                 <div class="boba-grid" id="grid-p1"></div>
             </div>
@@ -1114,6 +1191,14 @@
                         <div class="liquid-fill" id="liquid-p2"></div>
                     </div>
                     <span class="cup-capacity-text" id="capacity-p2">剩 100%</span>
+                </div>
+
+                <!-- 🧋 杯內即時配料微膠囊 (小小的字) -->
+                <div class="cup-ingredients-pill">
+                    <span class="ing-label">杯內配料：</span>
+                    <span class="ing-chip chip-boba" id="chip-boba-p2">🧋 珍珠 <b id="ing-boba-p2">0</b></span>
+                    <span class="ing-chip chip-celery" id="chip-celery-p2">🌿 芹菜 <b id="ing-celery-p2">0</b></span>
+                    <span class="ing-toast" id="toast-p2"></span>
                 </div>
 
                 <!-- 九宮格盤面 -->
@@ -1665,7 +1750,8 @@
                     scoreP2Display.textContent = scoreP2;
                     reactionTimesP2.push(reactionMs);
                 }
-                createPopIndicator(clientX, clientY, `+1 🧋`, `${reactionMs} ms`, player === 1 ? 'pop-p1' : 'pop-p2');
+                updateIngredientDisplay(player, 'boba');
+                createPopIndicator(clientX, clientY, `+1 🧋 加入珍珠`, `${reactionMs} ms`, player === 1 ? 'pop-p1' : 'pop-p2');
             } else if (isTrap) {
                 // 誤吸芹菜：扣分，抑制失敗
                 playSound('trap');
@@ -1676,8 +1762,10 @@
                 } else {
                     scoreP2 = Math.max(0, scoreP2 - 2);
                     scoreP2Display.textContent = scoreP2;
+                    trapHitsP2++;
                 }
-                createPopIndicator(clientX, clientY, ` -2 🌿`, `衝動抑制失敗 (誤按芹菜)`, 'pop-trap');
+                updateIngredientDisplay(player, 'celery');
+                createPopIndicator(clientX, clientY, `-2 🌿 加入芹菜`, `衝動抑制失敗`, 'pop-trap');
             }
 
             updateCupLevels();
@@ -1687,6 +1775,39 @@
             setTimeout(() => {
                 if (gameActive) peep(player);
             }, 220);
+        }
+
+        // 🧋 杯內即時配料指示更新 (小小的字)
+        function updateIngredientDisplay(player, type) {
+            const bobaB = document.getElementById(`ing-boba-p${player}`);
+            const celeryB = document.getElementById(`ing-celery-p${player}`);
+            const toastEl = document.getElementById(`toast-p${player}`);
+            const chipEl = document.getElementById(type === 'boba' ? `chip-boba-p${player}` : `chip-celery-p${player}`);
+
+            if (type === 'boba') {
+                const totalBoba = player === 1 ? reactionTimesP1.length : reactionTimesP2.length;
+                if (bobaB) bobaB.textContent = totalBoba;
+                if (toastEl) {
+                    toastEl.textContent = '+加入珍珠 🧋';
+                    toastEl.className = 'ing-toast show toast-boba';
+                }
+            } else if (type === 'celery') {
+                const totalCelery = player === 1 ? trapHitsP1 : trapHitsP2;
+                if (celeryB) celeryB.textContent = totalCelery;
+                if (toastEl) {
+                    toastEl.textContent = '+加入芹菜 🌿';
+                    toastEl.className = 'ing-toast show toast-celery';
+                }
+            }
+
+            if (chipEl) {
+                chipEl.classList.add('bump');
+                setTimeout(() => chipEl.classList.remove('bump'), 180);
+            }
+
+            setTimeout(() => {
+                if (toastEl) toastEl.classList.remove('show');
+            }, 850);
         }
 
         // ⚡ 神經傳導燈條即時脈衝特效
@@ -1807,6 +1928,7 @@
             trapAvoidsP2 = 0; trapHitsP2 = 0;
             scoreP1Display.textContent = '0';
             scoreP2Display.textContent = '0';
+            document.querySelectorAll('#ing-boba-p1, #ing-boba-p2, #ing-celery-p1, #ing-celery-p2').forEach(el => el.textContent = '0');
             updateCupLevels();
 
             timeLeft = 30;
